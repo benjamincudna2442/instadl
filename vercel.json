@@ -1,16 +1,19 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api.py",
-      "use": "@vercel/python"
+    "version": 2,
+    "framework": null,
+    "functions": {
+        "api/**/*": {
+            "memory": 1024,
+            "maxDuration": 60
+        }
+    },
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/api/app.py"
+        }
+    ],
+    "env": {
+        "PYTHON_VERSION": "3.9"
     }
-  ],
-  "routes": [
-    {
-      "src": "/download",
-      "methods": ["POST"],
-      "dest": "api.py"
-    }
-  ]
 }
