@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "functions": {
+    "api.py": {
+      "runtime": "python@3.9",
+      "handler": "api.handler"
+    }
+  },
+  "routes": [
+    {
+      "src": "/download",
+      "methods": ["POST"],
+      "dest": "api.py"
+    }
+  ],
+  "env": {},
+  "files": [
+    "cookies/cookies.txt"
+  ]
+}
