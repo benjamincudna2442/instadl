@@ -121,7 +121,7 @@ def get_instagram_post_urls(url, cookies_file="cookies/cookies.txt"):
 def api_status():
     """
     Flask endpoint for API status page (GET request).
-    Returns an HTML page with API status, developer info, and POST method details.
+    Returns a modern, responsive HTML page with API status, form for testing, and developer info.
     """
     html_content = """
     <!DOCTYPE html>
@@ -130,119 +130,103 @@ def api_status():
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Instagram Post Scraper API</title>
-        <style>
-            body {
-                font-family: 'Arial', sans-serif;
-                background-color: #f0f2f5;
-                color: #333;
-                text-align: center;
-                padding: 50px;
-                margin: 0;
-            }
-            .container {
-                max-width: 800px;
-                margin: 0 auto;
-                background: #fff;
-                padding: 30px;
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            }
-            h1 {
-                color: #e1306c;
-                font-size: 2.5em;
-                margin-bottom: 10px;
-            }
-            h2 {
-                color: #405de6;
-                font-size: 1.8em;
-                margin-top: 20px;
-            }
-            p {
-                font-size: 1.2em;
-                line-height: 1.6;
-                margin: 10px 0;
-            }
-            .status-live {
-                color: #2ecc71;
-                font-weight: bold;
-                font-size: 1.5em;
-            }
-            .highlight {
-                background-color: #ffeaa7;
-                padding: 5px 10px;
-                border-radius: 5px;
-            }
-            .code-block {
-                background-color: #2d2d2d;
-                color: #f8f8f2;
-                text-align: left;
-                padding: 15px;
-                border-radius: 5px;
-                font-family: 'Courier New', monospace;
-                margin: 20px 0;
-                overflow-x: auto;
-            }
-            a {
-                color: #1da1f2;
-                text-decoration: none;
-                font-weight: bold;
-            }
-            a:hover {
-                text-decoration: underline;
-            }
-            .footer {
-                margin-top: 30px;
-                font-size: 1em;
-                color: #777;
-            }
-        </style>
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body>
-        <div class="container">
-            <h1>Instagram Post Scraper API</h1>
-            <p class="status-live">API Status: Live 🚀</p>
-            <p>Effortlessly extract direct media URLs from Instagram posts with a single API call!</p>
-            <p class="highlight">Built with ❤️ by <a href="https://x.com/ISmartDevs" target="_blank">@ISmartDevs</a></p>
-            <p>Stay updated with the latest features and fixes at <a href="https://t.me/TheSmartDev" target="_blank">@TheSmartDev</a></p>
-
-            <h2>Why Use This API?</h2>
-            <p>Fast, reliable, and developer-friendly! Scrape Instagram post media (images/videos) in seconds, even for multi-media sidecar posts. Perfect for automation, content analysis, or media downloading.</p>
-
-            <h2>POST /download - How It Works</h2>
-            <p>Send a POST request to <code>/download</code> with a JSON payload containing an Instagram post URL to retrieve direct media URLs.</p>
-            <div class="code-block">
-                <strong>Request Example:</strong><br>
-                curl -X POST https://your-api-url/download \<br>
-                -H "Content-Type: application/json" \<br>
-                -d '{"url": "https://www.instagram.com/p/XXXXX/"}'
-                <br><br>
-                <strong>Response Example (Success):</strong><br>
-                {<br>
-                &nbsp;&nbsp;"status": "success",<br>
-                &nbsp;&nbsp;"message": "Media URLs extracted successfully.",<br>
-                &nbsp;&nbsp;"media_urls": [<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;"https://instagram.com/.../media1.jpg",<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;"https://instagram.com/.../media2.mp4"<br>
-                &nbsp;&nbsp;]<br>
-                }<br><br>
-                <strong>Response Example (Error):</strong><br>
-                {<br>
-                &nbsp;&nbsp;"status": "error",<br>
-                &nbsp;&nbsp;"message": "Invalid Instagram URL! Please ensure it contains a valid post code.",<br>
-                &nbsp;&nbsp;"media_urls": []<br>
-                }
+    <body class="bg-gradient-to-br from-purple-100 to-pink-100 min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-4xl w-full bg-white rounded-2xl shadow-xl p-8 md:p-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-center text-purple-600 mb-4">Instagram Post Scraper API</h1>
+            <p class="text-center text-xl text-green-600 font-semibold mb-6">API Status: <span id="api-status">Checking...</span> 🚀</p>
+            <p class="text-center text-lg text-gray-600 mb-8">Extract direct media URLs from Instagram posts effortlessly!</p>
+            
+            <!-- API Test Form -->
+            <div class="bg-gray-50 p-6 rounded-lg mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Try It Out</h2>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input id="instagram-url" type="text" placeholder="Enter Instagram post URL (e.g., https://www.instagram.com/p/XXXXX/)" 
+                           class="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <button id="submit-url" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition">Get Media URLs</button>
+                </div>
+                <div id="result" class="mt-4 text-gray-700"></div>
             </div>
-            <p><strong>Note:</strong> This API requires valid Instagram session cookies (<code>cookies/cookies.txt</code>) in Netscape format with <code>sessionid</code> and <code>csrftoken</code>. Private posts need authenticated cookies.</p>
+            
+            <!-- Why Use This API -->
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Why Use This API?</h2>
+            <p class="text-gray-600 mb-6">Fast, reliable, and developer-friendly! Scrape Instagram post media (images/videos) in seconds, including multi-media sidecar posts. Perfect for automation, content analysis, or media downloading.</p>
+            
+            <!-- API Documentation -->
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">POST /download - How It Works</h2>
+            <p class="text-gray-600 mb-4">Send a POST request to <code class="bg-gray-100 p-1 rounded">/download</code> with a JSON payload containing an Instagram post URL.</p>
+            <pre class="bg-gray-900 text-white p-4 rounded-lg overflow-x-auto">
+<strong>Request Example:</strong>
+curl -X POST https://your-api-url/download \\
+-H "Content-Type: application/json" \\
+-d '{"url": "https://www.instagram.com/p/XXXXX/"}'
 
-            <h2>Explore More</h2>
-            <p>Join our community of developers and innovators! Follow <a href="https://x.com/ISmartDevs" target="_blank">@ISmartDevs</a> on X for tips, tricks, and API updates.</p>
-            <p>Got feedback or ideas? Reach out via <a href="https://t.me/TheSmartDev" target="_blank">@TheSmartDev</a> on Telegram!</p>
+<strong>Response Example (Success):</strong>
+{
+  "status": "success",
+  "message": "Media URLs extracted successfully.",
+  "media_urls": [
+    "https://instagram.com/.../media1.jpg",
+    "https://instagram.com/.../media2.mp4"
+  ]
+}
 
-            <div class="footer">
-                <p>© 2025 Instagram Post Scraper API | Powered by <a href="https://x.ai" target="_blank">xAI</a></p>
-                <p>Unleashing the power of social media scraping, one post at a time! 🌟</p>
+<strong>Response Example (Error):</strong>
+{
+  "status": "error",
+  "message": "Invalid Instagram URL! Please ensure it contains a valid post code.",
+  "media_urls": []
+}
+            </pre>
+            <p class="text-gray-600 mt-4"><strong>Note:</strong> Requires valid Instagram session cookies (<code>cookies/cookies.txt</code>) in Netscape format with <code>sessionid</code> and <code>csrftoken</code>.</p>
+            
+            <!-- Footer -->
+            <div class="mt-12 text-center">
+                <p class="text-gray-600">Built with ❤️ by <a href="https://x.com/ISmartDevs" target="_blank" class="text-purple-600 hover:underline">@ISmartDevs</a></p>
+                <p class="text-gray-600">Join our community at <a href="https://t.me/TheSmartDev" target="_blank" class="text-purple-600 hover:underline">@TheSmartDev</a></p>
+                <p class="text-gray-500 mt-4">© 2025 Instagram Post Scraper API | Powered by <a href="https://x.ai" target="_blank" class="text-purple-600 hover:underline">xAI</a></p>
             </div>
         </div>
+        
+        <!-- Client-side JavaScript for API status and form submission -->
+        <script>
+            // Check API status
+            async function checkApiStatus() {
+                try {
+                    const response = await fetch('/download', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: '' }) });
+                    document.getElementById('api-status').textContent = response.ok ? 'Live' : 'Down';
+                    document.getElementById('api-status').className = response.ok ? 'text-green-600' : 'text-red-600';
+                } catch (error) {
+                    document.getElementById('api-status').textContent = 'Down';
+                    document.getElementById('api-status').className = 'text-red-600';
+                }
+            }
+            checkApiStatus();
+
+            // Handle form submission
+            document.getElementById('submit-url').addEventListener('click', async () => {
+                const url = document.getElementById('instagram-url').value;
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = 'Loading...';
+                
+                try {
+                    const response = await fetch('/download', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url })
+                    });
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        resultDiv.innerHTML = `<p class="text-green-600">Success: ${data.message}</p><ul class="list-disc pl-5">${data.media_urls.map(url => `<li><a href="${url}" target="_blank" class="text-blue-600 hover:underline">${url}</a></li>`).join('')}</ul>`;
+                    } else {
+                        resultDiv.innerHTML = `<p class="text-red-600">Error: ${data.message}</p>`;
+                    }
+                } catch (error) {
+                    resultDiv.innerHTML = `<p class="text-red-600">Error: Failed to fetch media URLs. Please try again.</p>`;
+                }
+            });
+        </script>
     </body>
     </html>
     """
