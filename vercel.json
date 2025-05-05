@@ -12,9 +12,6 @@
       "methods": ["POST"],
       "dest": "api.py"
     }
-  ],
-  "env": {},
-  "files": [
-    "cookies/cookies.txt"
-  ]
+  },
+  "env": {}
 }
